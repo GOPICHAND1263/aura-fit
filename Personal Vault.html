@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Fit - Your Fitness Journey</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #071e17, #0d3b2e, #10261f);
+        color: white;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .logo {
+        text-align: center;
+        margin-top: 25px;
+        margin-bottom: 20px;
+    }
+
+    .logo-icon {
+        width: 70px;
+        height: 70px;
+        margin: auto;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #39ff88, #00b85c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 35px;
+        box-shadow: 0 0 30px rgba(57,255,136,0.4);
+    }
+
+    .logo h1 {
+        margin-top: 10px;
+        font-size: 34px;
+        color: #55ff9a;
+        letter-spacing: 2px;
+    }
+
+    .logo p {
+        color: #b9d8ca;
+        margin-top: 5px;
+    }
+
+    .progress {
+        display: flex;
+        justify-content: space-between;
+        margin: 25px 0;
+        position: relative;
+    }
+
+    .progress::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 8%;
+        right: 8%;
+        height: 3px;
+        background: #315548;
+        z-index: 0;
+    }
+
+    .step {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #29483d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        font-weight: bold;
+        color: #b9d8ca;
+    }
+
+    .step.active {
+        background: #43ed89;
+        color: #062116;
+        box-shadow: 0 0 15px rgba(67,237,137,0.5);
+    }
+
+    .card {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        backdrop-filter: blur(15px);
+        border-radius: 25px;
+        padding: 28px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card h2 {
+        font-size: 27px;
+        margin-bottom: 8px;
+    }
+
+    .card .subtitle {
+        color: #b9d8ca;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    label {
+        display: block;
+        margin: 15px 0 7px;
+        color: #d9eee4;
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #3d6254;
+        background: rgba(0,0,0,0.2);
+        color: white;
+        border-radius: 12px;
+        outline: none;
+        font-size: 15px;
+    }
+
+    input:focus, select:focus {
+        border-color: #45ef8a;
+        box-shadow: 0 0 10px rgba(69,239,138,0.15);
+    }
+
+    select option {
+        background: #12352a;
+        color: white;
+    }
+
+    .button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 13px;
+        margin-top: 25px;
+        background: linear-gradient(90deg, #36e982, #13bd61);
+        color: #062116;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(54,233,130,0.25);
+    }
+
+    .back-button {
+        background: transparent;
+        color: #b9d8ca;
+        border: 1px solid #416657;
+        margin-top: 10px;
+    }
+
+    .back-button:hover {
+        background: rgba(255,255,255,0.05);
+        box-shadow: none;
+    }
+
+    .goals {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .goal {
+        padding: 18px 10px;
+        border: 1px solid #3d6254;
+        background: rgba(0,0,0,0.15);
+        border-radius: 15px;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .goal:hover {
+        border-color: #45ef8a;
+        transform: translateY(-3px);
+    }
+
+    .goal.selected {
+        background: rgba(55,235,133,0.15);
+        border-color: #45ef8a;
+        box-shadow: 0 0 15px rgba(69,239,138,0.15);
+    }
+
+    .goal .emoji {
+        font-size: 30px;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .goal span:last-child {
+        font-size: 14px;
+        color: #d9eee4;
+    }
+
+    .result-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .success-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        background: #43ed89;
+        color: #062116;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+    }
+
+    .result-header h2 {
+        color: #55ff9a;
+    }
+
+    .plan-box {
+        background: rgba(0,0,0,0.18);
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 13px;
+        border-left: 4px solid #43ed89;
+    }
+
+    .plan-box h3 {
+        color: #55ff9a;
+        margin-bottom: 8px;
+    }
+
+    .plan-box p {
+        color: #d2e7dc;
+        line-height: 1.6;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .stat {
+        text-align: center;
+        background: rgba(255,255,255,0.06);
+        padding: 13px 5px;
+        border-radius: 12px;
+    }
+
+    .stat strong {
+        display: block;
+        color: #55ff9a;
+        font-size: 18px;
+    }
+
+    .stat small {
+        color: #a8c5b7;
+    }
+
+    .tip {
+        margin-top: 18px;
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(255,193,7,0.08);
+        border: 1px solid rgba(255,193,7,0.25);
+        color: #ffe49a;
+        line-height: 1.5;
+        font-size: 13px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .footer {
+        text-align: center;
+        margin: 25px 0;
+        color: #7fa596;
+        font-size: 13px;
+    }
+
+    @media(max-width: 400px) {
+        .container {
+            padding: 12px;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .goals {
+            grid-template-columns: 1fr;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGO -->
+    <div class="logo">
+        <div class="logo-icon">⚡</div>
+        <h1>AURA FIT</h1>
+        <p>Build your better self</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress">
+        <div class="step active" id="step1">1</div>
+        <div class="step" id="step2">2</div>
+        <div class="step" id="step3">3</div>
+        <div class="step" id="step4">✓</div>
+    </div>
+
+
+    <!-- PAGE 1 LOGIN -->
+    <div class="card" id="page1">
+
+        <h2>Welcome 👋</h2>
+        <p class="subtitle">
+            Start your fitness journey with Aura Fit.
+            Enter your details to continue.
+        </p>
+
+        <label>Your Name</label>
+        <input type="text" id="loginName" placeholder="Enter your name">
+
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" placeholder="Enter 10-digit mobile number"
+               maxlength="10">
+
+        <button class="button" onclick="goToDetails()">
+            Continue →
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 2 DETAILS -->
+    <div class="card hidden" id="page2">
+
+        <h2>Your Details 📋</h2>
+        <p class="subtitle">
+            Tell us a little about yourself.
+        </p>
+
+        <label>Full Name</label>
+        <input type="text" id="fullName" placeholder="Enter your full name">
+
+        <label>Age</label>
+        <input type="number" id="age" placeholder="Enter your age">
+
+        <label>Weight (kg)</label>
+        <input type="number" id="weight" placeholder="Example: 60">
+
+        <label>Height (cm)</label>
+        <input type="number" id="height" placeholder="Example: 170">
+
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Prefer not to say</option>
+        </select>
+
+        <button class="button" onclick="goToGoals()">
+            Next: Choose Goal →
+        </button>
+
+        <button class="button back-button" onclick="goBack(1)">
+            ← Back
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 3 GOALS -->
+    <div class="card hidden" id="page3">
+
+        <h2>Choose Your Goal 🎯</h2>
+        <p class="subtitle">
+            What would you like to focus on?
+        </p>
+
+        <div class="goals">
+
+            <div class="goal" onclick="selectGoal(this,'Build Muscle')">
+                <span class="emoji">💪</span>
+                <span>Build Muscle</span>
+            </div>
+
+            <div class="goal" onclick="selectGoal(this,'Increase Strength')">
+                <span class="emoji">🏋️</span>
+                <span>Increase Strength</span>
+            </div>
+
+            <div class="goal" onclick="selectGoal(this,'Improve Stamina')">
+                <span class="emoji">🏃</span>
+                <span>Improve Stamina</span>
+            </div>
+
+            <div class="goal" onclick="selectGoal(this,'Healthy Lifestyle')">
+                <span class="emoji">🥗</span>
+                <span>Healthy Lifestyle</span>
+            </div>
+
+            <div class="goal" onclick="selectGoal(this,'General Fitness')">
+                <span class="emoji">🔥</span>
+                <span>General Fitness</span>
+            </div>
+
+            <div class="goal" onclick="selectGoal(this,'Flexibility')">
+                <span class="emoji">🧘</span>
+                <span>Flexibility</span>
+            </div>
+
+        </div>
+
+        <button class="button" onclick="generatePlan()">
+            Generate My Plan ✨
+        </button>
+
+        <button class="button back-button" onclick="goBack(2)">
+            ← Back
+        </button>
+
+    </div>
+
+
+    <!-- PAGE 4 RESULT -->
+    <div class="card hidden" id="page4">
+
+        <div class="result-header">
+
+            <div class="success-icon">✓</div>
+
+            <h2 id="welcomeMessage">
+                Welcome to Aura Fit!
+            </h2>
+
+            <p class="subtitle">
+                Your fitness journey starts today.
+            </p>
+
+        </div>
+
+        <div class="stats">
+
+            <div class="stat">
+                <strong id="resultAge">--</strong>
+                <small>Age</small>
+            </div>
+
+            <div class="stat">
+                <strong id="resultWeight">--</strong>
+                <small>Weight</small>
+            </div>
+
+            <div class="stat">
+                <strong id="resultHeight">--</strong>
+                <small>Height</small>
+            </div>
+
+        </div>
+
+        <div class="plan-box">
+            <h3>🎯 Your Goal</h3>
+            <p id="resultGoal"></p>
+        </div>
+
+        <div class="plan-box">
+            <h3>🏋️ Exercise</h3>
+            <p id="exercisePlan"></p>
+        </div>
+
+        <div class="plan-box">
+            <h3>🥗 Food Guidance</h3>
+            <p id="foodPlan"></p>
+        </div>
+
+        <div class="plan-box">
+            <h3>💧 Hydration</h3>
+            <p>
+                Drink water regularly throughout the day.
+                Your exact needs depend on activity, weather and individual factors.
+            </p>
+        </div>
+
+        <div class="plan-box">
+            <h3>😴 Recovery</h3>
+            <p>
+                Give your body enough rest and aim for a consistent sleep schedule.
+            </p>
+        </div>
+
+        <div class="tip">
+            ⚠️ <b>Aura Fit Tip:</b>
+            Start gradually and focus on consistency rather than trying to
+            change everything at once. For medical conditions, injuries,
+            or major changes in diet or exercise, get guidance from a qualified
+            healthcare professional.
+        </div>
+
+        <button class="button" onclick="restart()">
+            🔄 Start Again
+        </button>
+
+    </div>
+
+    <div class="footer">
+        © 2026 Aura Fit • Build your better self
+    </div>
+
+</div>
+
+
+<script>
+
+let selectedGoal = "";
+
+
+// PAGE 1 → PAGE 2
+function goToDetails() {
+
+    const name = document.getElementById("loginName").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+
+    if (name === "") {
+        alert("Please enter your name.");
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+    }
+
+    document.getElementById("fullName").value = name;
+
+    showPage(2);
+}
+
+
+// PAGE 2 → PAGE 3
+function goToGoals() {
+
+    const name = document.getElementById("fullName").value.trim();
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const height = document.getElementById("height").value;
+    const gender = document.getElementById("gender").value;
+
+    if (name === "") {
+        alert("Please enter your name.");
+        return;
+    }
+
+    if (age === "" || age < 13 || age > 100) {
+        alert("Please enter a valid age.");
+        return;
+    }
+
+    if (weight === "" || weight <= 0) {
+        alert("Please enter your weight.");
+        return;
+    }
+
+    if (height === "" || height <= 0) {
+        alert("Please enter your height.");
+        return;
+    }
+
+    if (gender === "") {
+        alert("Please select your gender.");
+        return;
+    }
+
+    showPage(3);
+}
+
+
+// SELECT GOAL
+function selectGoal(element, goal) {
+
+    document.querySelectorAll(".goal").forEach(function(item) {
+        item.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+    selectedGoal = goal;
+}
+
+
+// GENERATE PLAN
+function generatePlan() {
+
+    if (selectedGoal === "") {
+        alert("Please select your fitness goal.");
+        return;
+    }
+
+    const name = document.getElementById("fullName").value;
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const height = document.getElementById("height").value;
+
+    document.getElementById("welcomeMessage").innerText =
+        "Welcome, " + name + "! 🎉";
+
+    document.getElementById("resultAge").innerText = age;
+
+    document.getElementById("resultWeight").innerText =
+        weight + " kg";
+
+    document.getElementById("resultHeight").innerText =
+        height + " cm";
+
+    document.getElementById("resultGoal").innerText =
+        selectedGoal;
+
+    let exercise = "";
+    let food = "";
+
+    if (selectedGoal === "Build Muscle") {
+
+        exercise =
+        "Focus on beginner-friendly resistance exercises such as squats, " +
+        "push-ups, rows and other full-body movements. Start with manageable " +
+        "sessions and gradually increase difficulty while maintaining good form.";
+
+        food =
+        "Include regular balanced meals with protein-rich foods such as eggs, " +
+        "dal, beans, milk/curd, paneer, fish or other suitable protein sources, " +
+        "along with vegetables, fruits and whole grains.";
+
+    }
+
+    else if (selectedGoal === "Increase Strength") {
+
+        exercise =
+        "Use progressive strength training with exercises such as squats, " +
+        "push-ups, lunges and rows. Focus on controlled movements and proper form.";
+
+        food =
+        "Eat balanced meals containing protein, carbohydrates, healthy fats, " +
+        "vegetables and fruits. Avoid relying on supplements as a substitute for food.";
+
+    }
+
+    else if (selectedGoal === "Improve Stamina") {
+
+        exercise =
+        "Begin with activities such as brisk walking, cycling, jogging or other " +
+        "comfortable cardio activities. Increase duration gradually.";
+
+        food =
+        "Choose balanced meals with whole grains, fruits, vegetables and protein. " +
+        "Have regular meals to support your activity levels.";
+
+    }
+
+    else if (selectedGoal === "Healthy Lifestyle") {
+
+        exercise =
+        "Try to stay physically active every day with walking, stretching and " +
+        "age-appropriate strength or cardio activities.";
+
+        food =
+        "Build meals around vegetables, fruits, whole grains and protein foods. " +
+        "Keep highly processed foods and sugary drinks occasional.";
+
+    }
+
+    else if (selectedGoal === "General Fitness") {
+
+        exercise =
+        "Combine cardio, strength exercises and flexibility work throughout the week. " +
+        "Start slowly and increase activity as your fitness improves.";
+
+        food =
+        "Choose a variety of foods including vegetables, fruits, protein foods, " +
+        "whole grains and healthy fats.";
+
+    }
+
+    else if (selectedGoal === "Flexibility") {
+
+        exercise =
+        "Include gentle stretching and mobility exercises regularly. Move slowly " +
+        "and avoid forcing a stretch into pain.";
+
+        food =
+        "Maintain a varied balanced diet with vegetables, fruits, protein foods, " +
+        "whole grains and adequate fluids.";
+
+    }
+
+    document.getElementById("exercisePlan").innerText = exercise;
+    document.getElementById("foodPlan").innerText = food;
+
+    showPage(4);
+}
+
+
+// PAGE NAVIGATION
+function showPage(pageNumber) {
+
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.add("hidden");
+    document.getElementById("page3").classList.add("hidden");
+    document.getElementById("page4").classList.add("hidden");
+
+    document.getElementById("page" + pageNumber)
+        .classList.remove("hidden");
+
+    updateProgress(pageNumber);
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+// PROGRESS BAR
+function updateProgress(pageNumber) {
+
+    for (let i = 1; i <= 4; i++) {
+
+        const step = document.getElementById("step" + i);
+
+        if (i <= pageNumber) {
+            step.classList.add("active");
+        } else {
+            step.classList.remove("active");
+        }
+    }
+}
+
+
+// BACK BUTTON
+function goBack(pageNumber) {
+    showPage(pageNumber);
+}
+
+
+// RESTART
+function restart() {
+
+    selectedGoal = "";
+
+    document.getElementById("loginName").value = "";
+    document.getElementById("mobile").value = "";
+    document.getElementById("fullName").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("weight").value = "";
+    document.getElementById("height").value = "";
+    document.getElementById("gender").value = "";
+
+    document.querySelectorAll(".goal").forEach(function(item) {
+        item.classList.remove("selected");
+    });
+
+    showPage(1);
+}
+
+</script>
+
+</body>
+</html>
